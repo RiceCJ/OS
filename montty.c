@@ -37,6 +37,7 @@ int ReadTerminal(int term, char *buf, int buflen){
 int InitTerminal(int term){
     Declare_Monitor_Entry_Procedure();
 
+    return InitHardware(term);
 };
 
 
@@ -49,4 +50,5 @@ int TerminalDriverStatistics(struct termstat *stats){
 int InitTerminalDriver(void){
     Declare_Monitor_Entry_Procedure();
 
+    return 0;
 };
