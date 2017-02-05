@@ -2,14 +2,14 @@
 // Created by Chengjiu Zhang on 1/29/17.
 //
 
-//#include <threads.h>
-//#include <hardware.h>
-//#include <terminals.h>
+#include <threads.h>
+#include <hardware.h>
+#include <terminals.h>
 
 #include <stdio.h>
-#include "threads.h"
-#include "hardware.h"
-#include "terminals.h"
+//#include "threads.h"
+//#include "hardware.h"
+//#include "terminals.h"
 
 #define ECHO_SIZE 2048
 #define INPUT_SIZE 2048
@@ -17,8 +17,8 @@
 #define IDLE 0
 
 // output register and input register
-static char out_reg[NUM_TERMINALS];
-static char in_reg[NUM_TERMINALS];
+//static char out_reg[NUM_TERMINALS];
+//static char in_reg[NUM_TERMINALS];
 
 // Terminal Driver Statistics
 static struct termstat statarr[NUM_TERMINALS];
@@ -254,8 +254,8 @@ int InitTerminal(int term){
 
 int TerminalDriverStatistics(struct termstat *stats){
     Declare_Monitor_Entry_Procedure();
-
-    for(int i = 0; i < NUM_TERMINALS; i++){
+    int i;
+    for(i = 0; i < NUM_TERMINALS; i++){
         stats[i].tty_in = statarr[i].tty_in;
         stats[i].tty_out = statarr[i].tty_out;
         stats[i].user_in = statarr[i].user_in;
@@ -270,7 +270,8 @@ int InitTerminalDriver(void){
     Declare_Monitor_Entry_Procedure();
 
     // set statistics to -1
-    for(int i = 0; i < NUM_TERMINALS; i++){
+    int i;
+    for(i = 0; i < NUM_TERMINALS; i++){
         terminalinit[i] = -1;
         statarr[i].tty_in = -1;
         statarr[i].tty_out = -1;
