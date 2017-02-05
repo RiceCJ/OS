@@ -55,10 +55,12 @@ void TransmitInterrupt(int term){
 
     char tempchar = '\0';
 
+    printf("%s\n","transmitintertup");
+
     // echo first
     if(echoindex[term] != curechindex[term]){
-        tempchar = echobuffer[term][echoindex[term]];
-        echoindex[term] = (echoindex[term]+1)%ECHO_SIZE;
+        tempchar = echobuffer[term][curechindex[term]];
+        curechindex[term] = (curechindex[term]+1)%ECHO_SIZE;
         WriteDataRegister(term, tempchar);
     }
     else {
@@ -95,7 +97,7 @@ void ReceiveInterrupt(int term){
 
     Declare_Monitor_Entry_Procedure();
 
-    printf("%s","receiveintertup");
+    printf("%s\n","receiveintertup");
 
     // get char typed
     char typed = ReadDataRegister(term);
