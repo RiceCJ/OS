@@ -152,16 +152,19 @@ int WriteTerminal(int term, char *buf, int buflen){
     // not initialized
     if(terminalinit[term] == -1) return -1;// how about buffer size?
 
-    if(buflen >= 0){
+    if(buflen == 0) return 0;
+
+    if(buflen > 0){
 
         while(statewrite[term] == ACTIVE) CondWait(condwrite[term]);
         statewrite[term] = ACTIVE;
 
         outputbuffer[term] = buf;
         outputindex[term] = buflen;
-        curoutindex[term] = 0;
+        curoutindex[term] = 1;
 
         // to be continue
+
         WriteDataRegister(term, outputbuffer[term][0]);
 
 
