@@ -78,6 +78,10 @@ void TransmitInterrupt(int term){
                 curoutindex[term]++;
                 WriteDataRegister(term, tempchar);
             }
+            else{
+                curoutindex[term]++;
+                WriteDataRegister(term, tempchar);
+            }
 
         }
     }
