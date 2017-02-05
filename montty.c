@@ -132,6 +132,7 @@ void ReceiveInterrupt(int term){
 
     if(statenewchar[term] == ACTIVE){
         statenewchar[term] = IDLE;
+        curechindex[term]++;
         WriteDataRegister(term, typed);
     }
 
