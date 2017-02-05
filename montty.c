@@ -46,6 +46,7 @@ static int statewrite[NUM_TERMINALS];
 static int stateread[NUM_TERMINALS];
 static int numlines[NUM_TERMINALS];
 static int statenewline[NUM_TERMINALS];
+static int statenewchar[NUM_TERMINALS];
 
 void TransmitInterrupt(int term){
     Declare_Monitor_Entry_Procedure();
@@ -60,20 +61,26 @@ void TransmitInterrupt(int term){
         echoindex[term] = (echoindex[term]+1)%ECHO_SIZE;
         WriteDataRegister(term, tempchar);
     }
-    // output next
-    else if(outputindex[term] != curoutindex[term]){
-        tempchar = outputbuffer[term][curoutindex[term]];
-        if(tempchar == '\n' && statenewline[term] == ACTIVE){
-            statenewline[term] = IDLE;
-            WriteDataRegister(term, '\r');
-        }
-        else if(tempchar == '\n'){
-            statenewline[term] = ACTIVE;
-            curoutindex[term]++;
-            WriteDataRegister(term, tempchar);
-        }
+    else {
 
+        statenewchar[term] = ACTIVE;
+
+        if(outputindex[term] != curoutindex[term]){
+            tempchar = outputbuffer[term][curoutindex[term]];
+            if(tempchar == '\n' && statenewline[term] == ACTIVE){
+                statenewline[term] = IDLE;
+                WriteDataRegister(term, '\r');
+            }
+            else if(tempchar == '\n'){
+                statenewline[term] = ACTIVE;
+                curoutindex[term]++;
+                WriteDataRegister(term, tempchar);
+            }
+
+        }
     }
+    // output next
+
 
     if(tempchar != '\0'){
         statarr[term].tty_out++;
@@ -87,6 +94,8 @@ void ReceiveInterrupt(int term){
     // shouldn't use a condition variable to wait
 
     Declare_Monitor_Entry_Procedure();
+
+    printf("%s","receiveintertup");
 
     // get char typed
     char typed = ReadDataRegister(term);
@@ -117,6 +126,11 @@ void ReceiveInterrupt(int term){
         echoindex[term] = (echoindex[term]+1)%ECHO_SIZE;
         numlines[term]++;
         CondSignal(condline[term]);
+    }
+
+    if(statenewchar[term] == ACTIVE){
+        statenewchar[term] == IDLE;
+        WriteDataRegister(term, typed);
     }
 
 
@@ -233,6 +247,7 @@ int InitTerminal(int term){
         statewrite[term] = IDLE;
         stateread[term] = IDLE;
         statenewline[term] = ACTIVE;
+        statenewchar[term] = ACTIVE;
 
         echoindex[term] = 0;
         curechindex[term] = 0;
