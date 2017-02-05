@@ -129,7 +129,7 @@ void ReceiveInterrupt(int term){
     }
 
     if(statenewchar[term] == ACTIVE){
-        statenewchar[term] == IDLE;
+        statenewchar[term] = IDLE;
         WriteDataRegister(term, typed);
     }
 
