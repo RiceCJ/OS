@@ -40,6 +40,7 @@ static int curoutindex[NUM_TERMINALS];
 static cond_id_t condwrite[NUM_TERMINALS];
 static cond_id_t condread[NUM_TERMINALS];
 static cond_id_t  condline[NUM_TERMINALS];
+static cond_id_t condbusy[NUM_TERMINALS];
 
 // states related to condition variables
 static int statewrite[NUM_TERMINALS];
@@ -47,6 +48,7 @@ static int stateread[NUM_TERMINALS];
 static int numlines[NUM_TERMINALS];
 static int statenewline[NUM_TERMINALS];
 static int statenewchar[NUM_TERMINALS];
+static int statebusy[NUM_TERMINALS];
 
 void TransmitInterrupt(int term){
     Declare_Monitor_Entry_Procedure();
@@ -83,6 +85,8 @@ void TransmitInterrupt(int term){
 
         }
         else{
+            statebusy[term] = IDLE;
+            CondSignal(condbusy[term]);
             statenewchar[term] = ACTIVE;
         }
     }
@@ -167,7 +171,7 @@ int WriteTerminal(int term, char *buf, int buflen){
         // to be continue
 
         WriteDataRegister(term, outputbuffer[term][0]);
-
+        if(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
 
         statewrite[term] = IDLE;
         statarr[term].user_in += buflen;
@@ -253,12 +257,15 @@ int InitTerminal(int term){
         condwrite[term] = CondCreate();
         condread[term] = CondCreate();
         condline[term] = CondCreate();
+        condbusy[term] = CondCreate();
 
         numlines[term] = 0;
         statewrite[term] = IDLE;
         stateread[term] = IDLE;
         statenewline[term] = ACTIVE;
         statenewchar[term] = ACTIVE;
+        statebusy[term] = IDLE;
+
 
         echoindex[term] = 0;
         curechindex[term] = 0;
