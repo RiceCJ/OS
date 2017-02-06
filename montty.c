@@ -156,7 +156,7 @@ int WriteTerminal(int term, char *buf, int buflen){
     if(buflen == 0) return 0;
 
     if(buflen > 0){
-
+        statenewchar[term] = IDLE;
         while(statewrite[term] == ACTIVE) CondWait(condwrite[term]);
         statewrite[term] = ACTIVE;
 
