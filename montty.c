@@ -170,8 +170,9 @@ int WriteTerminal(int term, char *buf, int buflen){
 
         // to be continue
 
-        WriteDataRegister(term, outputbuffer[term][0]);
+
         if(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
+        WriteDataRegister(term, outputbuffer[term][0]);
 
         statewrite[term] = IDLE;
         statarr[term].user_in += buflen;
