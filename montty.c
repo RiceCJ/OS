@@ -66,7 +66,7 @@ void TransmitInterrupt(int term){
         WriteDataRegister(term, tempchar);
     }
     else {
-        statenewchar[term] = ACTIVE;
+
         if(outputindex[term] != curoutindex[term]){
             tempchar = outputbuffer[term][curoutindex[term]];
             if(tempchar == '\n' && statenewline[term] == ACTIVE){
@@ -85,6 +85,7 @@ void TransmitInterrupt(int term){
 
         }
         else{
+            statenewchar[term] = ACTIVE;
             statebusy[term] = IDLE;
             CondSignal(condbusy[term]);
         }
