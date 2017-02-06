@@ -66,7 +66,7 @@ void TransmitInterrupt(int term){
         WriteDataRegister(term, tempchar);
     }
     else {
-
+        statenewchar[term] = ACTIVE;
         if(outputindex[term] != curoutindex[term]){
             tempchar = outputbuffer[term][curoutindex[term]];
             if(tempchar == '\n' && statenewline[term] == ACTIVE){
@@ -87,7 +87,6 @@ void TransmitInterrupt(int term){
         else{
             statebusy[term] = IDLE;
             CondSignal(condbusy[term]);
-            statenewchar[term] = ACTIVE;
         }
     }
     // output next
@@ -169,10 +168,10 @@ int WriteTerminal(int term, char *buf, int buflen){
         curoutindex[term] = 1;
 
         // to be continue
-
-
-        if(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
+        statebusy[term] = ACTIVE;
         WriteDataRegister(term, outputbuffer[term][0]);
+        if(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
+
 
         statewrite[term] = IDLE;
         statarr[term].user_in += buflen;
