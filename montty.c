@@ -212,7 +212,7 @@ int ReadTerminal(int term, char *buf, int buflen){
         for(len = 0; len < buflen; len++){
             tempchar = inputbuffer[term][curinputindex[term]];
             curinputindex[term] = (curinputindex[term] + 1) % INPUT_SIZE;
-
+            fprintf("%s\n","ininin");
             buf[len] = tempchar;
 
             if(tempchar == '\n'){
