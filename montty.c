@@ -210,7 +210,12 @@ int ReadTerminal(int term, char *buf, int buflen){
             tempchar = inputbuffer[term][curinputindex[term]];
             curinputindex[term] = (curinputindex[term] + 1) % INPUT_SIZE;
             if(tempchar == '\b'){
-                if(len > 0) len--;
+                if(len == 1) len--;
+                else if(len > 1){
+                    len--;
+                    buf[len] = '\0';
+                    len--;
+                }
             }
             else{
                 buf[len] = tempchar;
