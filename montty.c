@@ -42,11 +42,9 @@ static cond_id_t condwrite[NUM_TERMINALS];
 static cond_id_t condread[NUM_TERMINALS];
 static cond_id_t  condline[NUM_TERMINALS];
 static cond_id_t condbusy[NUM_TERMINALS];
-static cond_id_t condecho[NUM_TERMINALS];
 
 // states related to condition variables
 static int statewrite[NUM_TERMINALS];
-static int stateecho[NUM_TERMINALS];
 static int stateread[NUM_TERMINALS];
 static int numlines[NUM_TERMINALS];
 static int statenewline[NUM_TERMINALS];
@@ -87,15 +85,9 @@ void TransmitInterrupt(int term){
 
         }
         else{
-//            statenewchar[term] = ACTIVE;
-//            if(stateecho[term] == ACTIVE){
-//                stateecho[term] = IDLE;
-//                CondSignal(condecho[term]);
-//            }
-//            else{
-                statebusy[term] = IDLE;
-                CondSignal(condbusy[term]);
-//            }
+            statenewchar[term] = ACTIVE;
+            statebusy[term] = IDLE;
+            CondSignal(condbusy[term]);
         }
     }
     // output next
@@ -153,8 +145,8 @@ void ReceiveInterrupt(int term){
     if(statenewchar[term] == ACTIVE){
         statenewchar[term] = IDLE;
         curechindex[term]++;
-        while(stateecho[term] == ACTIVE) CondWait(condecho[term]);
-        stateecho[term] = ACTIVE;
+        while(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
+        statebusy[term] = ACTIVE;
         WriteDataRegister(term, typed);
     }
 
@@ -183,10 +175,12 @@ int WriteTerminal(int term, char *buf, int buflen){
         curoutindex[term] = 1;
 
         // to be continue
+        statebusy[term] = ACTIVE;
 
         while(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
         statebusy[term] = ACTIVE;
         WriteDataRegister(term, outputbuffer[term][0]);
+
 
         statewrite[term] = IDLE;
         statarr[term].user_in += buflen;
@@ -222,6 +216,7 @@ int ReadTerminal(int term, char *buf, int buflen){
         for(len = 0; len < buflen; len++){
             tempchar = inputbuffer[term][curinputindex[term]];
             curinputindex[term] = (curinputindex[term] + 1) % INPUT_SIZE;
+//            printf("%s\n","ininin");
             buf[len] = tempchar;
 
             if(tempchar == '\n'){
@@ -268,7 +263,6 @@ int InitTerminal(int term){
         condread[term] = CondCreate();
         condline[term] = CondCreate();
         condbusy[term] = CondCreate();
-        condecho[term] = CondCreate();
 
         numlines[term] = 0;
         statewrite[term] = IDLE;
@@ -276,7 +270,6 @@ int InitTerminal(int term){
         statenewline[term] = ACTIVE;
         statenewchar[term] = ACTIVE;
         statebusy[term] = IDLE;
-        stateecho[term] = IDLE;
 
 
         echoindex[term] = 0;
