@@ -131,6 +131,9 @@ void ReceiveInterrupt(int term){
         if(inputbuffer[term][(inputindex[term]-1)%INPUT_SIZE] != '\n' &&
                 inputbuffer[term][(inputindex[term]-1)%INPUT_SIZE] != '\0')
             inputindex[term] = (inputindex[term]-2)%INPUT_SIZE;
+        else{
+            inputindex[term] = (inputindex[term]-1)%INPUT_SIZE;
+        }
     }
     else if(typed == '\r'){
         echobuffer[term][echoindex[term]] = '\n';
