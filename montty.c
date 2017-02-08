@@ -42,9 +42,11 @@ static cond_id_t condwrite[NUM_TERMINALS];
 static cond_id_t condread[NUM_TERMINALS];
 static cond_id_t  condline[NUM_TERMINALS];
 static cond_id_t condbusy[NUM_TERMINALS];
+static cond_id_t condecho[NUM_TERMINALS];
 
 // states related to condition variables
 static int statewrite[NUM_TERMINALS];
+static int stateecho[NUM_TERMINALS];
 static int stateread[NUM_TERMINALS];
 static int numlines[NUM_TERMINALS];
 static int statenewline[NUM_TERMINALS];
@@ -66,7 +68,8 @@ void TransmitInterrupt(int term){
         WriteDataRegister(term, tempchar);
     }
     else {
-
+        stateecho[term] = IDLE;
+        CondSignal(condecho[term]);
         if(outputindex[term] != curoutindex[term]){
             tempchar = outputbuffer[term][curoutindex[term]];
             if(tempchar == '\n' && statenewline[term] == ACTIVE){
@@ -143,6 +146,7 @@ void ReceiveInterrupt(int term){
     }
 
     if(statenewchar[term] == ACTIVE){
+        stateecho[term] = ACTIVE;
         statenewchar[term] = IDLE;
         curechindex[term]++;
         WriteDataRegister(term, typed);
@@ -173,6 +177,7 @@ int WriteTerminal(int term, char *buf, int buflen){
         curoutindex[term] = 1;
 
         // to be continue
+        while(stateecho[term] == ACTIVE) CondWait(stateecho[term]);
         statebusy[term] = ACTIVE;
         WriteDataRegister(term, outputbuffer[term][0]);
         while(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
@@ -259,6 +264,7 @@ int InitTerminal(int term){
         condread[term] = CondCreate();
         condline[term] = CondCreate();
         condbusy[term] = CondCreate();
+        condecho[term] = CondCreate();
 
         numlines[term] = 0;
         statewrite[term] = IDLE;
@@ -266,7 +272,7 @@ int InitTerminal(int term){
         statenewline[term] = ACTIVE;
         statenewchar[term] = ACTIVE;
         statebusy[term] = IDLE;
-
+        stateecho[term] = IDLE;
 
         echoindex[term] = 0;
         curechindex[term] = 0;
