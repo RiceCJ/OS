@@ -57,7 +57,6 @@ void TransmitInterrupt(int term){
 
     char tempchar = '\0';
 
-    printf("%s\n","transmitintertup");
 
     // echo first
     if(echoindex[term] != curechindex[term]){
@@ -105,8 +104,6 @@ void ReceiveInterrupt(int term){
     // shouldn't use a condition variable to wait
 
     Declare_Monitor_Entry_Procedure();
-
-    printf("%s\n","receiveintertup");
 
     // get char typed
     char typed = ReadDataRegister(term);
