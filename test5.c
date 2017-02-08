@@ -24,11 +24,11 @@ int main(int argc, char **argv)
 
 
         while(1) {
-	  ThreadCreate(writer, NULL);
-	  ThreadCreate(reader, NULL);
-          ThreadCreate(writer2, NULL);
+//	  ThreadCreate(writer, NULL);
+//	  ThreadCreate(reader, NULL);
+//          ThreadCreate(writer2, NULL);
 	  ThreadCreate(reader2, NULL);
-        sleep(3);
+        sleep(5);
 	}
     ThreadWaitAll();
 
