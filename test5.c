@@ -56,7 +56,8 @@ writer2(void *arg)
 
     printf("Doing WriteTerminal... '");
     fflush(stdout);
-    status = WriteTerminal(2, "foofoofoo\n",9);
+    status = WriteTerminal(2, "foofoofoo\n",10);
+
     printf("'. Done: status = %d.\n", status);
     fflush(stdout);
 }
