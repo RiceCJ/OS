@@ -19,15 +19,15 @@ int main(int argc, char **argv)
 //    InitTerminal(2);
     if (argc > 1) HardwareOutputSpeed(1, atoi(argv[1]));
     if (argc > 2) HardwareInputSpeed(1, atoi(argv[2]));
-//        if (argc > 1) HardwareOutputSpeed(2, atoi(argv[1]));
-//    if (argc > 2) HardwareInputSpeed(2, atoi(argv[2]));
+    if (argc > 1) HardwareOutputSpeed(2, atoi(argv[1]));
+    if (argc > 2) HardwareInputSpeed(2, atoi(argv[2]));
     sleep(5);
 
         while(1) {
-//	  ThreadCreate(writer, NULL);
+	  ThreadCreate(writer, NULL);
 	  ThreadCreate(reader, NULL);
-//          ThreadCreate(writer2, NULL);
-//	  ThreadCreate(reader2, NULL);
+          ThreadCreate(writer2, NULL);
+	  ThreadCreate(reader2, NULL);
         sleep(5);
 	}
     ThreadWaitAll();
