@@ -71,7 +71,7 @@ reader(void *arg)
     fflush(stdout);
     char* str = malloc(100);
     status = ReadTerminal(1, str,100);
-    printf("read1 %s\n", str);
+    printf("read1 %s", str);
     free(str);
     fflush(stdout);
 }
@@ -84,6 +84,6 @@ reader2(void *arg)
     fflush(stdout);
     char* str = malloc(100);
     status = ReadTerminal(2, str,100);
-    printf("read2 %s\n", str);
+    printf("read2 %s", str);
     fflush(stdout);
 }
