@@ -87,15 +87,15 @@ void TransmitInterrupt(int term){
 
         }
         else{
-            statenewchar[term] = ACTIVE;
-            if(stateecho[term] == ACTIVE){
-                stateecho[term] = IDLE;
-                CondSignal(condecho[term]);
-            }
-            else{
+//            statenewchar[term] = ACTIVE;
+//            if(stateecho[term] == ACTIVE){
+//                stateecho[term] = IDLE;
+//                CondSignal(condecho[term]);
+//            }
+//            else{
                 statebusy[term] = IDLE;
                 CondSignal(condbusy[term]);
-            }
+//            }
         }
     }
     // output next
@@ -222,7 +222,6 @@ int ReadTerminal(int term, char *buf, int buflen){
         for(len = 0; len < buflen; len++){
             tempchar = inputbuffer[term][curinputindex[term]];
             curinputindex[term] = (curinputindex[term] + 1) % INPUT_SIZE;
-//            printf("%s\n","ininin");
             buf[len] = tempchar;
 
             if(tempchar == '\n'){
