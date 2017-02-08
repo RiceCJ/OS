@@ -200,7 +200,7 @@ int ReadTerminal(int term, char *buf, int buflen){
         while(stateread[term] == ACTIVE) CondWait(condread[term]);
         stateread[term] = ACTIVE;
 
-        // hoare
+
         while(numlines[term] == 0) CondWait(condline[term]);
         numlines[term]--;
 

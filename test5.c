@@ -9,7 +9,7 @@ void writer2(void *);
 void reader(void *);
 void reader2(void *);
 
-char string[] = "abcdefghijklmnopqrstuvwxyz";
+char string[] = "abcdefghijklmnopqrstuvwxyz\n";
 int length = sizeof(string) - 1;
 
 int main(int argc, char **argv)
@@ -45,7 +45,7 @@ writer(void *arg)
     status = WriteTerminal(1, string, length);
     char* str = malloc(3);
     // status = ReadTerminal(1, str,3);
-    //printf("'. Done: status = %d.\n", status);
+    printf("'. Done: status = %d.\n", status);
     fflush(stdout);
 }
 
@@ -56,7 +56,7 @@ writer2(void *arg)
 
     printf("Doing WriteTerminal... '");
     fflush(stdout);
-    status = WriteTerminal(2, "foofoofoo",9);
+    status = WriteTerminal(2, "foofoofoo\n",9);
     printf("'. Done: status = %d.\n", status);
     fflush(stdout);
 }
