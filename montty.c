@@ -128,8 +128,8 @@ void ReceiveInterrupt(int term){
         echoindex[term] = (echoindex[term]+1)%ECHO_SIZE;
         echobuffer[term][echoindex[term]] = '\b';
         echoindex[term] = (echoindex[term]+1)%ECHO_SIZE;
-        if(inputbuffer[term][inputindex[term]-1] != '\n' &&
-                inputbuffer[term][inputindex[term]-1] != '\0')
+        if(inputbuffer[term][(inputindex[term]-1)%INPUT_SIZE] != '\n' &&
+                inputbuffer[term][(inputindex[term]-1)%INPUT_SIZE] != '\0')
             inputindex[term] = (inputindex[term]-2)%INPUT_SIZE;
     }
     else if(typed == '\r'){
