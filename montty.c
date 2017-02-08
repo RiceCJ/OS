@@ -199,10 +199,11 @@ int ReadTerminal(int term, char *buf, int buflen){
         // mesa
         while(stateread[term] == ACTIVE) CondWait(condread[term]);
         stateread[term] = ACTIVE;
-
+        printf("%s\n","a");
 
         while(numlines[term] == 0) CondWait(condline[term]);
         numlines[term]--;
+        printf("%s\n","b");
 
         for(len = 0; len < buflen; len++){
             tempchar = inputbuffer[term][inputindex[term]];
