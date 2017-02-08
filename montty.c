@@ -177,7 +177,7 @@ int WriteTerminal(int term, char *buf, int buflen){
         curoutindex[term] = 1;
 
         // to be continue
-        while(stateecho[term] == ACTIVE) CondWait(stateecho[term]);
+        while(stateecho[term] == ACTIVE) CondWait(condecho[term]);
         statebusy[term] = ACTIVE;
         WriteDataRegister(term, outputbuffer[term][0]);
         while(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
