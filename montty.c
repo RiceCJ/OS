@@ -145,6 +145,7 @@ void ReceiveInterrupt(int term){
     if(statenewchar[term] == ACTIVE){
         statenewchar[term] = IDLE;
         curechindex[term]++;
+
         WriteDataRegister(term, typed);
     }
 
@@ -173,10 +174,10 @@ int WriteTerminal(int term, char *buf, int buflen){
         curoutindex[term] = 1;
 
         // to be continue
+
+        while(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
         statebusy[term] = ACTIVE;
         WriteDataRegister(term, outputbuffer[term][0]);
-        while(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
-
 
         statewrite[term] = IDLE;
         statarr[term].user_in += buflen;
