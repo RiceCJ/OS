@@ -32,6 +32,7 @@ static int echoindex[NUM_TERMINALS];
 static int curechindex[NUM_TERMINALS];
 static char inputbuffer[NUM_TERMINALS][INPUT_SIZE];
 static int inputindex[NUM_TERMINALS];
+static int curinputindex[NUM_TERMINALS];
 static char* outputbuffer[NUM_TERMINALS];
 static int outputindex[NUM_TERMINALS];
 static int curoutindex[NUM_TERMINALS];
@@ -206,8 +207,8 @@ int ReadTerminal(int term, char *buf, int buflen){
         printf("%s\n","b");
 
         for(len = 0; len < buflen; len++){
-            tempchar = inputbuffer[term][inputindex[term]];
-            inputindex[term] = (inputindex[term] + 1) % INPUT_SIZE;
+            tempchar = inputbuffer[term][curinputindex[term]];
+            curinputindex[term] = (curinputindex[term] + 1) % INPUT_SIZE;
             if(tempchar == '\b'){
                 if(len > 0) len--;
             }
@@ -272,6 +273,7 @@ int InitTerminal(int term){
         inputindex[term] = 0;
         outputindex[term] = 0;
         curoutindex[term] = 0;
+        curinputindex[term] = 0;
 
         // statistics
         statarr[term].tty_in = 0;
