@@ -149,7 +149,8 @@ void ReceiveInterrupt(int term){
         stateecho[term] = ACTIVE;
         statenewchar[term] = IDLE;
         curechindex[term]++;
-        WriteDataRegister(term, typed);
+        if(statebusy[term] == IDLE)
+            WriteDataRegister(term, typed);
     }
 
 
