@@ -128,7 +128,7 @@ void ReceiveInterrupt(int term){
         echoindex[term] = (echoindex[term]+1)%ECHO_SIZE;
         echobuffer[term][echoindex[term]] = '\b';
         echoindex[term] = (echoindex[term]+1)%ECHO_SIZE;
-        inputindex[term] = (inputindex[term]-1)%INPUT_SIZE;
+        inputindex[term] = (inputindex[term]-2)%INPUT_SIZE;
     }
     else if(typed == '\r'){
         echobuffer[term][echoindex[term]] = '\n';
@@ -209,17 +209,17 @@ int ReadTerminal(int term, char *buf, int buflen){
         for(len = 0; len < buflen; len++){
             tempchar = inputbuffer[term][curinputindex[term]];
             curinputindex[term] = (curinputindex[term] + 1) % INPUT_SIZE;
-            if(tempchar == '\b'){
-                if(len == 1) len--;
-                else if(len > 1){
-                    len--;
-                    buf[len] = '\0';
-                    len--;
-                }
-            }
-            else{
+//            if(tempchar == '\b'){
+//                if(len == 0) len--;
+//                else if(len > 0){
+//                    len--;
+//                    buf[len] = '\0';
+//                    len--;
+//                }
+//            }
+//            else{
                 buf[len] = tempchar;
-            }
+//            }
             if(tempchar == '\n'){
                 break;
             }
