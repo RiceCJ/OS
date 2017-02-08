@@ -172,7 +172,7 @@ int WriteTerminal(int term, char *buf, int buflen){
         // to be continue
         statebusy[term] = ACTIVE;
         WriteDataRegister(term, outputbuffer[term][0]);
-        if(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
+        while(statebusy[term] == ACTIVE) CondWait(condbusy[term]);
 
 
         statewrite[term] = IDLE;
@@ -204,7 +204,7 @@ int ReadTerminal(int term, char *buf, int buflen){
         stateread[term] = ACTIVE;
 
         // hoare
-        if(numlines[term] == 0) CondWait(condline[term]);
+        while(numlines[term] == 0) CondWait(condline[term]);
         numlines[term]--;
 
         for(len = 0; len < buflen; len++){
