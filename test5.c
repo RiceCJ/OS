@@ -70,7 +70,7 @@ reader(void *arg)
     //    printf("Doing ReadTerminal... '");
     fflush(stdout);
     char* str = malloc(100);
-    status = ReadTerminal(1, str,100);
+    status = ReadTerminal(1, str,10);
     printf("read1 %s", str);
     free(str);
     fflush(stdout);
