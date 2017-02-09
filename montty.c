@@ -15,6 +15,7 @@
 #define INPUT_SIZE 2048
 #define ACTIVE 1
 #define IDLE 0
+#define PASSLIMIT 1000
 
 // output register and input register
 //static char out_reg[NUM_TERMINALS];
@@ -52,6 +53,10 @@ static int numlines[NUM_TERMINALS];
 static int statenewline[NUM_TERMINALS];
 static int statenewchar[NUM_TERMINALS];
 static int statebusy[NUM_TERMINALS];
+
+// eliminate starvation
+static int writebypass[NUM_TERMINALS];
+static int readbypass[NUM_TERMINALS];
 
 void TransmitInterrupt(int term){
     Declare_Monitor_Entry_Procedure();
@@ -169,8 +174,16 @@ int WriteTerminal(int term, char *buf, int buflen){
     if(buflen == 0) return 0;
 
     if(buflen > 0){
-
-        while(statewrite[term] == ACTIVE) CondWait(condwrite[term]);
+        int pass;
+        int i;
+        for(i = 0; i < NUM_TERMINALS; i++){
+            if(i != term && writebypass[i] >= PASSLIMIT) pass = 1;
+        }
+        while(statewrite[term] == ACTIVE || pass == 1) CondWait(condwrite[term]);
+        writebypass[term] = 0;
+        for(i = 0; i < NUM_TERMINALS; i++){
+            if(i != term && statewrite[i] == ACTIVE) writebypass[i]++;
+        }
         statenewchar[term] = IDLE;
         statewrite[term] = ACTIVE;
 
@@ -210,8 +223,17 @@ int ReadTerminal(int term, char *buf, int buflen){
     if(buflen >= 0){
 
         // mesa
-        while(stateread[term] == ACTIVE) CondWait(condread[term]);
+        int pass;
+        int i;
+        for(i = 0; i < NUM_TERMINALS; i++){
+            if(i != term && readbypass[i] >= PASSLIMIT) pass = 1;
+        }
+        while(stateread[term] == ACTIVE || pass == 1) CondWait(condread[term]);
         stateread[term] = ACTIVE;
+        readbypass[term] = 0;
+        for(i = 0; i < NUM_TERMINALS; i++){
+            if(i != term && stateread[i] == ACTIVE) readbypass[i]++;
+        }
 
         while(numlines[term] == 0) CondWait(condline[term]);
         numlines[term]--;
@@ -275,6 +297,9 @@ int InitTerminal(int term){
         statenewchar[term] = ACTIVE;
         statebusy[term] = IDLE;
         stateecho[term] = IDLE;
+
+        readbypass[term] = 0;
+        writebypass[term] = 0;
 
         echoindex[term] = 0;
         curechindex[term] = 0;
