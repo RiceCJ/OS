@@ -15,7 +15,7 @@
 #define INPUT_SIZE 2048
 #define ACTIVE 1
 #define IDLE 0
-#define PASSLIMIT 1000
+#define PASSLIMIT 10
 
 // output register and input register
 //static char out_reg[NUM_TERMINALS];
