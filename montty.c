@@ -174,7 +174,7 @@ int WriteTerminal(int term, char *buf, int buflen){
     if(buflen == 0) return 0;
 
     if(buflen > 0){
-        int pass;
+        int pass = 0;
         int i;
         for(i = 0; i < NUM_TERMINALS; i++){
             if(i != term && writebypass[i] >= PASSLIMIT) pass = 1;
@@ -223,7 +223,7 @@ int ReadTerminal(int term, char *buf, int buflen){
     if(buflen >= 0){
 
         // mesa
-        int pass;
+        int pass = 0;
         int i;
         for(i = 0; i < NUM_TERMINALS; i++){
             if(i != term && readbypass[i] >= PASSLIMIT) pass = 1;
